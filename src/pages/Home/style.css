@@ -136,6 +136,13 @@ body {
     font-size: 16px;
 }
 
+.pAge {
+    display: flex;
+    width: 100%;
+    gap: 12px;
+    justify-content: space-between;
+}
+
 .social-icons a {
     border: 1px solid #ccc;
     border-radius: 20%;

@@ -1,11 +1,41 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import './style.css';
 import { FaGoogle, FaFacebookF, FaGithub, FaLinkedinIn } from "react-icons/fa";
+import api from '../../services/api';
 
 const Home = () => {
   const containerRef = useRef(null);
 
+  const [users, setUsers] = useState([])
+  const inputName = useRef()
+  const inputEmail = useRef()
+  const inputPassword = useRef()
+  const inputAge = useRef()
+
+  async function getUsers(){
+    const usersFromApi = await api.get('/usuarios')
+
+    setUsers(usersFromApi.data)
+  }
+
+  async function createUsers(){
+    await api.post('/usuarios', {
+      name: inputName.current.value,
+      email: inputEmail.current.value,
+      password: inputPassword.current.value,
+      age: inputAge.current.value
+    })
+    getUsers()
+  }
+
+  async function deleteUsers(id){
+    await api.delete(`/usuarios/${id}`, {
+    })
+    getUsers()
+  }
+
   useEffect(() => {
+    getUsers()
     const container = containerRef.current;
     const registerBtn = document.getElementById('register');
     const loginBtn = document.getElementById('login');
@@ -45,14 +75,17 @@ const Home = () => {
             <div className="social-icons">
               <a href="#" className="icon"><FaGoogle className='icons'/></a>
               <a href="#" className="icon"><FaFacebookF className='icons'/></a>
-              <a href="#" className="icon"><FaGithub className='icons'/></a>
+              <a href='#' className="icon"><FaGithub className='icons'/></a>
               <a href="#" className="icon"><FaLinkedinIn className='icons'/></a>
             </div>
             <span>ou use seu e-mail para cadastro</span>
-            <input type="text" placeholder="Name" />
-            <input type="email" placeholder="Email" />
-            <input type="password" placeholder="Password" />
-            <button>Cadastrar-se</button>
+            <input type="text" placeholder="Seu Nome" ref={inputName} />
+            <input type="email" placeholder="Seu Email" ref={inputEmail} />
+            <div className='pAge'>
+              <input type="password" placeholder="Sua Senha" ref={inputPassword} />
+              <input type="text" placeholder="Sua idade" ref={inputAge} />
+            </div>
+            <button type='button' onClick={createUsers}>Cadastrar-se</button>
           </form>
         </div>
         <div className="form-container sign-in">
@@ -65,8 +98,8 @@ const Home = () => {
               <a href="#" className="icon"><FaLinkedinIn className='icons'/></a>
             </div>
             <span>ou use seu email e senha</span>
-            <input type="email" placeholder="Email" />
-            <input type="password" placeholder="Password" />
+            <input type="email" placeholder="Seu Email" />
+            <input type="password" placeholder="Sua Senha" />
             <a href="#">Esqueceu sua senha?</a>
             <button>Entrar</button>
           </form>
